@@ -36,12 +36,12 @@ def demoOptimization(f=rosen, x0=np.array([0.1, 0.1, 0.1]), visualize=True):
 
         print(res.x[0])
 
-        ax.scatter(res.x[0], res.x[1], res.x[2], marker='x')
+        ax.scatter(res.x[0], res.x[1], f(np.stack([res.x[0], res.x[1]])), marker='x')
         plt.show()
 
 
-x0 = np.array([8.1, 8.1, 8.1])
-demoOptimization(f=rosen)
+x0 = np.array([2.1, 2.1, 3.1])
+demoOptimization(f=rastrigin, x0=x0)
 
 
 '''

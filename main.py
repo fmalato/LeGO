@@ -6,9 +6,11 @@ import pandas as pd
 
 space_dimension = 3
 
+
 def f(x):
     # objective function definition (x^2 + 3z, for now)
     return pow(x[0], 2) + 3 * x[2]
+
 
 def generate():
     # for now it generates a bunch of random numbers
@@ -19,9 +21,11 @@ gamma = 0.01  # Step size multiplier
 precision = 0.00001  # Desired precision of result
 max_iters = 10000  # Maximum number of iterations
 
+
 def df(x):
     # derivative wrt x[0], just to test if refine() works
     return 2 * x[0] + 3 * x[2]
+
 
 def refine(x):
     next_x = x  # We start the search at x=6
@@ -35,6 +39,7 @@ def refine(x):
             if abs(step) <= precision:
                 break
     return current_x
+
 
 def algorithm1():
     f_star = float('inf')
@@ -50,7 +55,8 @@ def algorithm1():
         print(x, y)
     return x_star, f_star
 
-x_star = f_star = 10000000
+
+# x_star = f_star = 10000000
 iter_x  = 0
 iter_f = 0
 for i in range(30):
