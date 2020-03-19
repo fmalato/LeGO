@@ -18,11 +18,13 @@ def rastrigin(x, A=10):
         res += x[i]**2 - A * np.cos(2 * math.pi * x[i])
     return res
 
+
 def schwefel(x):
     res = 418.9829 * len(x)
     for i in range(len(x)):
         res -= x[i] * np.sin(np.sqrt(np.absolute(x[i])))
     return res
+
 
 def demoOptimization(f=rosen, x0=np.array([0.1, 0.1, 0.1]), visualize=True, name='rosen'):
     res = minimize(f, x0, method='nelder-mead', options={'xatol': 1e-8, 'disp': True})
@@ -50,14 +52,17 @@ def demoOptimization(f=rosen, x0=np.array([0.1, 0.1, 0.1]), visualize=True, name
         ax.set_ylabel('y')
         ax.set_zlabel('f(x, y)')
 
-        print(res.x[0])
-
-        ax.scatter(res.x[0], res.x[1], f(np.stack([res.x[0], res.x[1]])), marker='x')
+        ax.scatter(res.x[0], res.x[1], res['fun'], marker='x')
         plt.show()
 
 
-"""x0 = np.array([2.1, 2.1, 3.1])
-demoOptimization(f=schwefel, x0=x0, name='schwefel')"""
+'''
+x0 = np.array([2.1, 2.1])
+demoOptimization(f=rastrigin, x0=x0, name='rastrigin')
+'''
+
+
+
 
 
 '''

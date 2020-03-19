@@ -12,6 +12,7 @@ from testFunctions import rosen, rastrigin, schwefel
     4. stop after N local searches
 """
 
+
 def multistart(f, x, numSamples=100):
     indices = range(len(x))
     # I decided to go with the indices since the dimension of the vector may change
@@ -30,11 +31,29 @@ def multistart(f, x, numSamples=100):
     return actualBest, bestPoint
 
 
+def generate(n_dimensions, maxRange):
+    rangify = np.vectorize(lambda v: v * (2 * maxRange) - maxRange)
+    return rangify(np.random.rand(n_dimensions))
+
+
+def multistartNew(f, n_dimensions=2, maxRange=5.12, numSamples=100):
+    actualBest = float('inf')
+    bestPoint = []
+    for i in range(numSamples):
+        sample = generate(n_dimensions, maxRange)
+        res = minimize(f, sample, method='nelder-mead', options={'xatol': 1e-8})
+        if res['fun'] < actualBest:
+            actualBest = res['fun']
+            bestPoint = res.x
+    return actualBest, bestPoint
+
+
+'''
 x = np.arange(-5.12, 5.12, 0.1)
 y = np.arange(-5.12, 5.12, 0.1)
 xgrid, ygrid = np.meshgrid(x, y)
 xy = np.stack([xgrid, ygrid])
-z = rosen(xy)
+z = rastrigin(xy)
 data = []
 for i in range(len(x)):
     for j in range(len(y)):
@@ -42,5 +61,10 @@ for i in range(len(x)):
 
 data = np.asarray(data)
 print(data.shape)
-best, point = multistart(rosen, data)
+best, point = multistart(rastrigin, data, numSamples=100)
 print('best: ' + str(best) + '    point: ' + str(point))
+'''
+
+best, point = multistartNew(rosen, maxRange=3)
+print('best: ' + str(best) + '    point: ' + str(point))
+
