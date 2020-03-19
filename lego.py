@@ -8,7 +8,7 @@ from multistart import generate
 from testFunctions import rosen, rastrigin, schwefel
 
 
-def lego(f, threshold, n_dimensions=2, maxRange=5.12, numSamples=100, numTrainingSamples=100):
+def lego(f, threshold, n_dimensions=2, maxRange=5.12, numSamples=100, numTrainingSamples=1000):
     actualBest = float('inf')
     bestPoint = []
     trainSetX = np.array([])
@@ -32,9 +32,6 @@ def lego(f, threshold, n_dimensions=2, maxRange=5.12, numSamples=100, numTrainin
     trainSetX = trainSetX.reshape(numTrainingSamples, n_dimensions)
     trainSetY = trainSetY.reshape(-1, 1)
 
-    print(trainSetX)
-    print(trainSetY)
-
     clf = SVC(gamma='auto')
     clf.fit(trainSetX, trainSetY)
 
@@ -48,11 +45,9 @@ def lego(f, threshold, n_dimensions=2, maxRange=5.12, numSamples=100, numTrainin
 
     return actualBest, bestPoint
 
-'''
 
 start = time.time()
-best, point = lego(rastrigin, threshold=10, n_dimensions=4, maxRange=5.12)
+best, point = lego(rastrigin, threshold=10, n_dimensions=6, maxRange=5.12)
 end = time.time()
 print('best: ' + str(best) + '    point: ' + str(point) + '    time elapsed: ' + str(end - start))
 
-'''
