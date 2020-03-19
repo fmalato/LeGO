@@ -13,23 +13,39 @@ def rosen(x):
 
 
 def rastrigin(x, A=10):
-    return A + sum(x[:-1]**2 - A * np.cos(2 * math.pi * x[:-1]))
+    res = A * len(x)
+    for i in range(len(x)):
+        res += x[i]**2 - A * np.cos(2 * math.pi * x[i])
+    return res
 
+def schwefel(x):
+    res = 418.9829 * len(x)
+    for i in range(len(x)):
+        res -= x[i] * np.sin(np.sqrt(np.absolute(x[i])))
+    return res
 
-def demoOptimization(f=rosen, x0=np.array([0.1, 0.1, 0.1]), visualize=True):
+def demoOptimization(f=rosen, x0=np.array([0.1, 0.1, 0.1]), visualize=True, name='rosen'):
     res = minimize(f, x0, method='nelder-mead', options={'xatol': 1e-8, 'disp': True})
     print(res)
 
     if visualize:
-        x = np.arange(-5.12, 5.12, 0.1)
-        y = np.arange(-5.12, 5.12, 0.1)
+        if name == 'rosen':
+            x = np.arange(-2, 2, 0.1)
+            y = np.arange(-1, 3, 0.1)
+        elif name == 'rastrigin':
+            x = np.arange(-5.12, 5.12, 0.1)
+            y = np.arange(-5.12, 5.12, 0.1)
+        else:
+            x = np.arange(-512, 512, 10)
+            y = np.arange(-512, 512, 10)
         xgrid, ygrid = np.meshgrid(x, y)
         xy = np.stack([xgrid, ygrid])
 
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         ax.view_init(45, -45)
-        ax.plot_surface(xgrid, ygrid, f(xy), cmap=cm.coolwarm)
+        results = f(xy)
+        ax.plot_surface(xgrid, ygrid, results, cmap=cm.coolwarm)
         ax.set_xlabel('x')
         ax.set_ylabel('y')
         ax.set_zlabel('f(x, y)')
@@ -40,8 +56,8 @@ def demoOptimization(f=rosen, x0=np.array([0.1, 0.1, 0.1]), visualize=True):
         plt.show()
 
 
-x0 = np.array([2.1, 2.1, 3.1])
-demoOptimization(f=rastrigin, x0=x0)
+"""x0 = np.array([2.1, 2.1, 3.1])
+demoOptimization(f=schwefel, x0=x0, name='schwefel')"""
 
 
 '''
