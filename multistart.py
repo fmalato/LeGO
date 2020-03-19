@@ -12,7 +12,7 @@ from testFunctions import rosen, rastrigin, schwefel
     4. stop after N local searches
 """
 
-def multistart(f, x, numSamples=50):
+def multistart(f, x, numSamples=100):
     indices = range(len(x))
     # I decided to go with the indices since the dimension of the vector may change
     actualBest = float('inf')
@@ -21,7 +21,7 @@ def multistart(f, x, numSamples=50):
         # selecting the actual sample
         sample = x[random.randint(low=indices[0], high=indices[len(indices) - 1])]
         # local search (cannot find Newton?!)
-        res = minimize(f, sample, method='nelder-mead', options={'xatol': 1e-8, 'disp': True})
+        res = minimize(f, sample, method='nelder-mead', options={'xatol': 1e-8})
         # getting the best local optimum and its value...
         if res['fun'] < actualBest:
             actualBest = res['fun']
@@ -37,10 +37,10 @@ xy = np.stack([xgrid, ygrid])
 z = rosen(xy)
 data = []
 for i in range(len(x)):
-    data.append([xgrid[i], ygrid[i], z[i]])
+    for j in range(len(y)):
+        data.append([xgrid[i][j], ygrid[i][j], z[i][j]])
 
-# TODO: check data shape!
 data = np.asarray(data)
 print(data.shape)
-best, point = multistart(rosen, data, 30)
+best, point = multistart(rosen, data)
 print('best: ' + str(best) + '    point: ' + str(point))
