@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 from scipy.optimize import minimize
 from numpy import random
@@ -63,8 +64,10 @@ data = np.asarray(data)
 print(data.shape)
 best, point = multistart(rastrigin, data, numSamples=100)
 print('best: ' + str(best) + '    point: ' + str(point))
+
+start = time.time()
+best, point = multistartNew(rastrigin, n_dimensions=4, maxRange=5.12, numSamples=1000)
+end = time.time()
+print('best: ' + str(best) + '    point: ' + str(point) + '    time elapsed: ' + str(end - start))
+
 '''
-
-best, point = multistartNew(rosen, maxRange=3)
-print('best: ' + str(best) + '    point: ' + str(point))
-
