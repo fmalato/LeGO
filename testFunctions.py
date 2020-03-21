@@ -62,9 +62,6 @@ demoOptimization(f=rastrigin, x0=x0, name='rastrigin')
 '''
 
 
-
-
-
 '''
 
 Old

@@ -30,6 +30,8 @@ def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTr
             actualBest = res['fun']
             bestPoint = res.x
 
+    print('Pre training best: ' + str(actualBest))
+
     trainSetX = trainSetX.reshape(numTrainingSamples, n_dimensions)
     trainSetY = trainSetY.reshape(-1, 1)
 
@@ -44,6 +46,7 @@ def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTr
 
     # training
     clf.fit(xTrain, yTrain)
+
     # validating
     predictions = clf.predict(xTest)
     right = 0
@@ -75,17 +78,43 @@ def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTr
     return actualBest, bestPoint, goodOptChance, numRuns
 
 
-clf = SVC(gamma='auto')
-results = []
-numSamples = 100
-threshold = 1
+if __name__ == '__main__':
 
-start = time.time()
-best, point, goodOptChance, numRuns = lego(rastrigin, threshold=threshold, clf=clf, numSamples=numSamples,
-                                           n_dimensions=2, maxRange=5.12)
-results.append(best)
-end = time.time()
-print('best: ' + str(best) + '    point: ' + str(point) + '    time elapsed: ' + str(end - start))
-print('An acceptable optimum was found ' + str(goodOptChance) + ' times out of ' + str(numRuns) + ' trials.')
+    clf = SVC(gamma='auto')
+    results = []
+    numSamples = 2000
+    numTrainingSamples = 32000
+    threshold = 50
+    n_dimensions = 10
+
+    start = time.time()
+    best, point, goodOptChance, numRuns = lego(rastrigin, threshold=threshold, clf=clf, numSamples=numSamples,
+                                               numTrainingSamples=numTrainingSamples, n_dimensions=n_dimensions,
+                                               maxRange=5.12)
+    results.append(best)
+    end = time.time()
+
+    print('best: ' + str(best) + '    point: ' + str(point) + '    time elapsed: ' + str(end - start))
+    print('An acceptable optimum was found ' + str(goodOptChance) + ' times out of ' + str(numRuns) + ' trials.')
 
 
+'''
+
+Multistart dim:10 34000
+
+best: 8.95462647602268    point: [-1.98991225e+00 -7.43738143e-08 -9.94958615e-01  9.94958606e-01
+ -9.94958641e-01 -2.81956823e-09  9.94958636e-01  9.94958622e-01
+ -1.66350992e-08 -5.27418536e-08]    time elapsed: 162.63828134536743
+
+
+Lego dim:10 32000 + 2000
+
+pretraining best: 11.9394986095372
+Positive examples: 1512/24000
+Accuracy: 96.72500000000001%
+best: 5.969754342559838    point: [ 9.94958630e-01 -9.94958637e-01 -9.94958640e-01 -6.39987000e-09
+  9.94958638e-01 -7.77808983e-09 -9.32782112e-09 -9.94958647e-01
+ -9.94958641e-01 -9.48547615e-09]    time elapsed: 178.54057955741882
+An acceptable optimum was found 1895 times out of 55779 trials.
+
+'''
