@@ -49,7 +49,7 @@ def multistartNew(f, n_dimensions=2, maxRange=5.12, numSamples=100):
     return actualBest, bestPoint
 
 
-'''
+
 x = np.arange(-5.12, 5.12, 0.1)
 y = np.arange(-5.12, 5.12, 0.1)
 xgrid, ygrid = np.meshgrid(x, y)
@@ -60,7 +60,7 @@ for i in range(len(x)):
     for j in range(len(y)):
         data.append([xgrid[i][j], ygrid[i][j], z[i][j]])
 
-data = np.asarray(data)
+"""data = np.asarray(data)
 print(data.shape)
 best, point = multistart(rastrigin, data, numSamples=100)
 print('best: ' + str(best) + '    point: ' + str(point))
@@ -68,6 +68,6 @@ print('best: ' + str(best) + '    point: ' + str(point))
 start = time.time()
 best, point = multistartNew(rastrigin, n_dimensions=4, maxRange=5.12, numSamples=1000)
 end = time.time()
-print('best: ' + str(best) + '    point: ' + str(point) + '    time elapsed: ' + str(end - start))
+print('best: ' + str(best) + '    point: ' + str(point) + '    time elapsed: ' + str(end - start))"""
 
-'''
+
