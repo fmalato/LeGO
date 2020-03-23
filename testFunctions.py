@@ -20,10 +20,13 @@ def rastrigin(x, A=10):
 
 
 def schwefel(x):
-    res = 418.9829 * len(x)
-    for i in range(len(x)):
-        res -= x[i] * np.sin(np.sqrt(np.absolute(x[i])))
-    return res
+    if all(value < 500 for value in x) and all(value > 500 for value in x):
+        res = 418.9829 * len(x)
+        for i in range(len(x)):
+            res -= x[i] * np.sin(np.sqrt(np.absolute(x[i])))
+        return res
+    else:
+        return float('inf')
 
 
 def demoOptimization(f=rosen, x0=np.array([0.1, 0.1, 0.1]), visualize=True, name='rosen'):
@@ -38,31 +41,40 @@ def demoOptimization(f=rosen, x0=np.array([0.1, 0.1, 0.1]), visualize=True, name
             x = np.arange(-5.12, 5.12, 0.1)
             y = np.arange(-5.12, 5.12, 0.1)
         else:
-            x = np.arange(-512, 512, 10)
-            y = np.arange(-512, 512, 10)
+            x = np.arange(-500, 500, 10)
+            y = np.arange(-500, 500, 10)
         xgrid, ygrid = np.meshgrid(x, y)
         xy = np.stack([xgrid, ygrid])
 
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
-        ax.view_init(45, -45)
+        ax.view_init(30, -45)
         results = f(xy)
         ax.plot_surface(xgrid, ygrid, results, cmap=cm.coolwarm)
         ax.set_xlabel('x')
         ax.set_ylabel('y')
         ax.set_zlabel('f(x, y)')
+        fig2 = plt.figure()
+        ax2 = fig2.add_subplot()
+        ax2.set_xlabel('x')
+        ax2.set_ylabel('z')
+        ax2.plot(x, results)
+        fig3 = plt.figure()
+        ax3 = fig3.add_subplot()
+        ax3.set_xlabel('y')
+        ax3.set_ylabel('z')
+        ax3.plot(y, results)
+
 
         ax.scatter(res.x[0], res.x[1], res['fun'], marker='x')
         plt.show()
 
 
-'''
-x0 = np.array([2.1, 2.1])
-demoOptimization(f=rastrigin, x0=x0, name='rastrigin')
-'''
 
+"""x0 = np.array([2.1, 2.1])
+demoOptimization(f=schwefel, x0=x0, name='schwefel')"""
 
-
+#print(schwefel([10000, 10000]))
 
 
 '''
