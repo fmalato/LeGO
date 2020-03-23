@@ -70,9 +70,11 @@ def demoOptimization(f=rosen, x0=np.array([0.1, 0.1, 0.1]), visualize=True, name
         plt.show()
 
 
+'''
+x0 = np.array([2.1, 2.1])
+demoOptimization(f=rastrigin, x0=x0, name='rastrigin')
+'''
 
-"""x0 = np.array([2.1, 2.1])
-demoOptimization(f=schwefel, x0=x0, name='schwefel')"""
 
 #print(schwefel([10000, 10000]))
 

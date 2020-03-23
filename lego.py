@@ -31,6 +31,8 @@ def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTr
             actualBest = res['fun']
             bestPoint = res.x
 
+    print('Pre training best: ' + str(actualBest))
+
     trainSetX = trainSetX.reshape(numTrainingSamples, n_dimensions)
     trainSetY = trainSetY.reshape(-1, 1)
 
@@ -45,6 +47,7 @@ def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTr
 
     # training
     clf.fit(xTrain, yTrain)
+
     # validating
     predictions = clf.predict(xTest)
     right = 0
@@ -124,3 +127,23 @@ if visualize and nDimensions == 3:
             ax.scatter(samples[i][0][0], samples[i][0][1], samples[i][0][2], marker='.', c='#ff0000')
     plt.show()
 
+'''
+
+Multistart dim:10 34000
+
+best: 8.95462647602268    point: [-1.98991225e+00 -7.43738143e-08 -9.94958615e-01  9.94958606e-01
+ -9.94958641e-01 -2.81956823e-09  9.94958636e-01  9.94958622e-01
+ -1.66350992e-08 -5.27418536e-08]    time elapsed: 162.63828134536743
+
+
+Lego dim:10 32000 + 2000
+
+pretraining best: 11.9394986095372
+Positive examples: 1512/24000
+Accuracy: 96.72500000000001%
+best: 5.969754342559838    point: [ 9.94958630e-01 -9.94958637e-01 -9.94958640e-01 -6.39987000e-09
+  9.94958638e-01 -7.77808983e-09 -9.32782112e-09 -9.94958647e-01
+ -9.94958641e-01 -9.48547615e-09]    time elapsed: 178.54057955741882
+An acceptable optimum was found 1895 times out of 55779 trials.
+
+'''
