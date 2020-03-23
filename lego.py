@@ -46,9 +46,9 @@ def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTr
     print('Positive examples: ' + str(positives) + '/' + str(len(yTrain)))
 
     # training
-    clf.fit(xTrain, yTrain)
+    clf.fit(xTrain, yTrain.ravel())
 
-    # validating
+    # testing
     predictions = clf.predict(xTest)
     right = 0
     for i in range(len(predictions)):
@@ -84,48 +84,54 @@ def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTr
     return actualBest, bestPoint, goodOptChance, numRuns, samples
 
 
-clf = SVC(gamma='auto')
-results = []
-numSamples = 100
-# recommended values:
-# Rastrigin: 2D: 1, 3D: 5, 10D: 60
-threshold = 1
-visualize = True
-nDimensions = 2
 
-start = time.time()
-best, point, goodOptChance, numRuns, samples = lego(rastrigin, threshold=threshold, clf=clf, numSamples=numSamples,
-                                                    n_dimensions=nDimensions, maxRange=5.12, visualize=visualize)
-results.append(best)
-end = time.time()
-print('best: ' + str(best) + '    point: ' + str(point) + '    time elapsed: ' + str(end - start))
-print('An acceptable optimum was found ' + str(goodOptChance) + ' times out of ' + str(numSamples) + ' trials.')
-print('NumRuns: ' + str(numRuns))
+if __name__ == '__main__':
 
-# 2D visualization
-if visualize and nDimensions == 2:
-    for i in range(len(samples)):
-        if samples[i][1] == 1.0:
-            plt.plot(samples[i][0][0], samples[i][0][1], 'bo')
-        else:
-            plt.plot(samples[i][0][0], samples[i][0][1], 'ro')
+    clf = SVC(gamma='auto')
+    results = []
+    numSamples = 10
+    numTrainingSamples = 450
+    # recommended values:
+    # Rastrigin: 2D: 1, 3D: 5, 10D: 60
+    threshold = -423
+    visualize = True
+    nDimensions = 2
+    maxRange = 500
 
-    plt.show()
+    start = time.time()
+    best, point, goodOptChance, numRuns, samples = lego(schwefel, threshold=threshold, clf=clf, numSamples=numSamples,
+                                                        numTrainingSamples=numTrainingSamples, n_dimensions=nDimensions,
+                                                        maxRange=maxRange, visualize=visualize)
+    results.append(best)
+    end = time.time()
+    print('best: ' + str(best) + '    point: ' + str(point) + '    time elapsed: ' + str(end - start))
+    print('An acceptable optimum was found ' + str(goodOptChance) + ' times out of ' + str(numSamples) + ' trials.')
+    print('NumRuns: ' + str(numRuns))
 
-# 3D visualization
-if visualize and nDimensions == 3:
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.view_init(45, -45)
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    ax.set_zlabel('z')
-    for i in range(len(samples)):
-        if samples[i][1] == 1.0:
-            ax.scatter(samples[i][0][0], samples[i][0][1], samples[i][0][2], marker='.', c='#0000ff')
-        else:
-            ax.scatter(samples[i][0][0], samples[i][0][1], samples[i][0][2], marker='.', c='#ff0000')
-    plt.show()
+    # 2D visualization
+    if visualize and nDimensions == 2:
+        for i in range(len(samples)):
+            if samples[i][1] == 1.0:
+                plt.plot(samples[i][0][0], samples[i][0][1], 'bo')
+            else:
+                plt.plot(samples[i][0][0], samples[i][0][1], 'ro')
+
+        plt.show()
+
+    # 3D visualization
+    if visualize and nDimensions == 3:
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        ax.view_init(45, -45)
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.set_zlabel('z')
+        for i in range(len(samples)):
+            if samples[i][1] == 1.0:
+                ax.scatter(samples[i][0][0], samples[i][0][1], samples[i][0][2], marker='.', c='#0000ff')
+            else:
+                ax.scatter(samples[i][0][0], samples[i][0][1], samples[i][0][2], marker='.', c='#ff0000')
+        plt.show()
 
 '''
 

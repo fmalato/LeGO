@@ -18,7 +18,7 @@ def rastrigin(x, A=10):
         res += x[i]**2 - A * np.cos(2 * math.pi * x[i])
     return res
 
-
+'''
 def schwefel(x):
     if all(value < 500 for value in x) and all(value > 500 for value in x):
         res = 418.9829 * len(x)
@@ -27,11 +27,18 @@ def schwefel(x):
         return res
     else:
         return float('inf')
+'''
+
+def schwefel(x):
+    try:
+        assert np.all(np.abs(x) <= 500)
+        return np.sum(np.prod([x, -np.sin(np.sqrt(np.abs(x)))], axis=0), axis=-1)
+    except:
+        return float('inf')
 
 
-def demoOptimization(f=rosen, x0=np.array([0.1, 0.1, 0.1]), visualize=True, name='rosen'):
+def demoOptimization(f=rosen, x0=np.array([0.1, 0.1]), visualize=True, name='rosen'):
     res = minimize(f, x0, method='nelder-mead', options={'xatol': 1e-8, 'disp': True})
-    print(res)
 
     if visualize:
         if name == 'rosen':
@@ -43,6 +50,7 @@ def demoOptimization(f=rosen, x0=np.array([0.1, 0.1, 0.1]), visualize=True, name
         else:
             x = np.arange(-500, 500, 10)
             y = np.arange(-500, 500, 10)
+
         xgrid, ygrid = np.meshgrid(x, y)
         xy = np.stack([xgrid, ygrid])
 
@@ -65,52 +73,10 @@ def demoOptimization(f=rosen, x0=np.array([0.1, 0.1, 0.1]), visualize=True, name
         ax3.set_ylabel('z')
         ax3.plot(y, results)
 
-
         ax.scatter(res.x[0], res.x[1], res['fun'], marker='x')
         plt.show()
 
 
-'''
-x0 = np.array([2.1, 2.1])
-demoOptimization(f=rastrigin, x0=x0, name='rastrigin')
-'''
-
-
-#print(schwefel([10000, 10000]))
-
-
-'''
-
-Old
-
-def rastrigin(*X, **kwargs):
-    A = kwargs.get('A', 10)
-    return A * len(X) + sum([(x**2 - A * np.cos(2 * math.pi * x)) for x in X])
-
-
-def der_rastrigin(*X, **kwargs):
-    A = kwargs.get('A', 10)
-    return sum([(2 * x + A * 2 * math.pi * np.sin(2 * math.pi * x)) for x in X])
-    
-
-def demoPlot():
-    X = np.linspace(-5.12, 5.12)
-    Y = np.linspace(-5.12, 5.12)
-
-    X, Y = np.meshgrid(X, Y)
-
-    Z = rastrigin(X, Y)
-    dZ = der_rastrigin(X, Y, A=10)
-
-    fig = plt.figure()
-    fig2 = plt.figure()
-
-    ax = fig.gca(projection='3d')
-    ax2 = fig2.gca(projection='3d')
-
-    ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.plasma, linewidth=0, antialiased=False)
-    ax2.plot_surface(X, Y, dZ, rstride=1, cstride=1, cmap=cm.plasma, linewidth=0, antialiased=False)
-
-    plt.show()
-
-'''
+if __name__ == '__main__':
+    x0 = np.array([3, 2])
+    demoOptimization(f=schwefel, x0=x0, name='schwefel')
