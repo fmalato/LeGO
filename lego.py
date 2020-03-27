@@ -1,16 +1,19 @@
 import numpy as np
 import time
+import sys
 import matplotlib.pyplot as plt
 
 from sklearn.svm import SVC
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.metrics import classification_report
 from scipy.optimize import minimize, Bounds
 
 from multistart import generate
 from testFunctions import rosen, rastrigin, schwefel
 
 
-def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTrainingSamples=1000, visualize=True):
+def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTrainingSamples=1000, visualize=True,
+         validation=False):
     actualBest = float('inf')
     bestPoint = []
     trainSetX = np.array([])
@@ -45,16 +48,25 @@ def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTr
             positives += 1
     print('Positive examples: ' + str(positives) + '/' + str(len(yTrain)))
 
+    if validation:
+        clf.C, clf.gamma, clf.class_weight, clf.kernel = validate(xTrain, yTrain, xTest, yTest)
+
     # training
     clf.fit(xTrain, yTrain.ravel())
 
     # testing
     predictions = clf.predict(xTest)
     right = 0
+    positivesRight = 0
     for i in range(len(predictions)):
         if predictions[i] == yTest[i]:
             right += 1
+        if predictions[i] == yTest[i] and predictions[i] == 1:
+            positivesRight += 1
+
     print('Accuracy: ' + str((right / len(predictions)) * 100) + '%')
+    print('Positives in test set: ' + str(len([x for x in yTest if x == 1])))
+    print('Positive examples accuracy: ' + str((positivesRight / len([x for x in yTest if x == 1])) * 100) + '%')
 
     stats = []
     numRuns = 0
@@ -84,24 +96,66 @@ def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTr
     return actualBest, bestPoint, goodOptChance, numRuns, samples
 
 
+def validate(xTrain, yTrain, xTest, yTest):
+    parameters = [{'kernel': ['rbf'],
+                   'gamma': [1e-10, 1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-2, 1],
+                   'C': [0.001, 0.01, 0.1, 1, 10, 100],
+                   'class_weight': [{1: 1}, {1: 2}, {1: 5}, {1: 10}]}]
+
+    print('Tuning hyper-parameters for recall')
+
+    clf = GridSearchCV(SVC(), parameters, scoring='recall_macro')
+    clf.fit(xTrain, yTrain.ravel())
+
+    print("Best parameters set found on development set:")
+    print()
+    print(clf.best_params_)
+    print()
+    print("Grid scores on development set:")
+    print()
+    means = clf.cv_results_['mean_test_score']
+    stds = clf.cv_results_['std_test_score']
+    for mean, std, params in zip(means, stds, clf.cv_results_['params']):
+        print("%0.3f (+/-%0.03f) for %r"
+              % (mean, std * 2, params))
+    print()
+
+    print("Detailed classification report:")
+    print()
+    print("The model is trained on the full development set.")
+    print("The scores are computed on the full evaluation set.")
+    print()
+    yTrue, yPred = yTest, clf.predict(xTest)
+    print(classification_report(yTrue, yPred))
+    print()
+
+    return clf.best_params_['C'], clf.best_params_['gamma'], clf.best_params_['class_weight'], clf.best_params_['kernel']
+
+
 
 if __name__ == '__main__':
 
-    clf = SVC(gamma='auto')
+    C = 0.01
+    gamma = 1e-6
+    class_weight = {1: 50}
+
+    clf = SVC(C=C, gamma=gamma, class_weight=class_weight)
+
     results = []
-    numSamples = 10
-    numTrainingSamples = 450
+    numSamples = 1000
+    numTrainingSamples = 10000
     # recommended values:
     # Rastrigin: 2D: 1, 3D: 5, 10D: 60
-    threshold = -423
+    threshold = -3000
     visualize = True
-    nDimensions = 2
+    validation = True
+    nDimensions = 10
     maxRange = 500
 
     start = time.time()
     best, point, goodOptChance, numRuns, samples = lego(schwefel, threshold=threshold, clf=clf, numSamples=numSamples,
                                                         numTrainingSamples=numTrainingSamples, n_dimensions=nDimensions,
-                                                        maxRange=maxRange, visualize=visualize)
+                                                        maxRange=maxRange, visualize=visualize, validation=validation)
     results.append(best)
     end = time.time()
     print('best: ' + str(best) + '    point: ' + str(point) + '    time elapsed: ' + str(end - start))
@@ -132,6 +186,7 @@ if __name__ == '__main__':
             else:
                 ax.scatter(samples[i][0][0], samples[i][0][1], samples[i][0][2], marker='.', c='#ff0000')
         plt.show()
+
 
 '''
 
