@@ -70,29 +70,28 @@ def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTr
 
     stats = []
     numRuns = 0
-    print('Progress: 0/' + str(numSamples))
 
     samples = []
     while len(stats) < numSamples:
         sample = generate(n_dimensions, maxRange)
         s = clf.predict([sample])
-        if visualize:
-            samples.append((sample, s[0]))
         if s[0] == 1.0:
             res = minimize(f, sample, method='L-BFGS-B', options={'ftol': 1e-8})
+            if visualize:
+                samples.append((sample, s[0]))
             if res['fun'] < actualBest:
                 actualBest = res['fun']
                 bestPoint = res.x
             stats.append(res['fun'])
-            if len(stats) % 20 == 0:
-                print('Progress: ' + str(len(stats)) + '/' + str(numSamples))
+            sys.stdout.write('\r Progress: {n}/{t}'.format(n=len(stats), t=numSamples))
+            sys.stdout.flush()
         numRuns += 1
 
     goodOptChance = 0
     for i in range(len(stats)):
         if stats[i] < threshold:
             goodOptChance += 1
-
+    print('\n')
     return actualBest, bestPoint, goodOptChance, numRuns, samples
 
 
@@ -133,24 +132,41 @@ def validate(xTrain, yTrain, xTest, yTest):
 
 
 
-if __name__ == '__main__':
+"""if __name__ == '__main__':
+
+    name = "schwefel"
+    results = []
+    if name == "schwefel":
+        numSamples = 1000
+        numTrainingSamples = 10000
+        # recommended values:
+        # Rastrigin: 2D: 1, 3D: 5, 10D: 60
+        threshold = -3000
+        visualize = True
+        validation = True
+        nDimensions = 10
+        maxRange = 500
+    else:
+        numSamples = 100
+        numTrainingSamples = 1000
+        # recommended values:
+        # Rastrigin: 2D: 1, 3D: 4, 10D: 60
+        threshold = 4
+        visualize = True
+        validation = True
+        nDimensions = 3
+        maxRange = 5.12
+        # Best values:
+        # 2D: C=1.0, gamma='auto'
+        # 3D: C=0.67, gamma=0.1
+        C = 0.67
+        gamma = 0.1
 
     C = 0.01
     gamma = 1e-6
     class_weight = {1: 50}
 
     clf = SVC(C=C, gamma=gamma, class_weight=class_weight)
-
-    results = []
-    numSamples = 1000
-    numTrainingSamples = 10000
-    # recommended values:
-    # Rastrigin: 2D: 1, 3D: 5, 10D: 60
-    threshold = -3000
-    visualize = True
-    validation = True
-    nDimensions = 10
-    maxRange = 500
 
     start = time.time()
     best, point, goodOptChance, numRuns, samples = lego(schwefel, threshold=threshold, clf=clf, numSamples=numSamples,
@@ -169,17 +185,21 @@ if __name__ == '__main__':
                 plt.plot(samples[i][0][0], samples[i][0][1], 'bo')
             else:
                 plt.plot(samples[i][0][0], samples[i][0][1], 'ro')
-
+        plt.xlim(xmin=-maxRange, xmax=maxRange)
+        plt.ylim(ymin=-maxRange, ymax=maxRange)
         plt.show()
 
     # 3D visualization
     if visualize and nDimensions == 3:
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
-        ax.view_init(45, -45)
+        ax.view_init(30, -45)
         ax.set_xlabel('x')
         ax.set_ylabel('y')
         ax.set_zlabel('z')
+        ax.set_xlim([-maxRange, maxRange])
+        ax.set_ylim([-maxRange, maxRange])
+        ax.set_zlim([-maxRange, maxRange])
         for i in range(len(samples)):
             if samples[i][1] == 1.0:
                 ax.scatter(samples[i][0][0], samples[i][0][1], samples[i][0][2], marker='.', c='#0000ff')
@@ -208,3 +228,4 @@ best: 5.969754342559838    point: [ 9.94958630e-01 -9.94958637e-01 -9.94958640e-
 An acceptable optimum was found 1895 times out of 55779 trials.
 
 '''
+"""
