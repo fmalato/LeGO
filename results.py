@@ -1,4 +1,4 @@
-import time
+import time, sys
 import json
 import numpy as np
 
@@ -6,11 +6,11 @@ from lego import lego
 from sklearn.svm import SVC
 from scipy.optimize import minimize
 from testFunctions import rastrigin, schwefel
-from multistart import multistartNew
+from multistart import multistartNew, generate
 
 # Rastrigin: 10000, 10000, 40, True, True, 9, 5.12, 0.01, 1e-6, 50
-numSamples = 5
-numTrainingSamples = 1000
+numSamples = 10000
+numTrainingSamples = 10000
 threshold = 40
 visualize = True
 validation = True
@@ -33,16 +33,24 @@ json_data = {}
 json_data["lego"] = {}
 json_data["multistart"] = {}
 idx = 0
+value = 0
 for sample in samples:
-    point, value = minimize(rastrigin, sample[0], method='L-BFGS-B', options={'ftol': 1e-8})
-    json_data["lego"][str(idx)].append({"point": point,
-                                      "value": value})
+    res = minimize(rastrigin, sample[0], method='L-BFGS-B', options={'ftol': 1e-8})
+    json_data["lego"][str(idx)] = []
+    json_data["lego"][str(idx)].append({"point": list(sample[0]),
+                                      "value": res["fun"]})
     idx += 1
+print("Starting Multistart iterations.")
 for i in range(len(samples)):
+    sys.stdout.write('\r Progress: {n}/{t}'.format(n=i, t=numSamples))
+    sys.stdout.flush()
     value, point = multistartNew(rastrigin, nDimensions, maxRange, numSamples)
-    json_data["multistart"][str(i)].append({"point": point,
+    json_data["multistart"][str(i)] = []
+    json_data["multistart"][str(i)].append({"point": list(point),
                                             "value": value})
-json.dump(json_data, "rastrigin.json")
+print("Dumping data to json.")
+with open("rastrigin.json", "w+") as f:
+    json.dump(json_data, f)
 
 
 
