@@ -2,8 +2,6 @@ import numpy as np
 import time
 import sys
 import matplotlib.pyplot as plt
-import warnings
-warnings.filterwarnings('always')
 
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split, GridSearchCV

@@ -1,6 +1,7 @@
 import json
 
 from matplotlib import pyplot
+
 from statsmodels.distributions.empirical_distribution import ECDF
 
 
