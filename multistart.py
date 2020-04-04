@@ -69,6 +69,6 @@ print('best: ' + str(best) + '    point: ' + str(point))
 
 if __name__ == '__main__':
     start = time.time()
-    best, point = multistartNew(rastrigin, n_dimensions=10, maxRange=5.12, numSamples=34000)
+    best, point = multistartNew(schwefel, n_dimensions=10, maxRange=500, numSamples=20100)
     end = time.time()
     print('best: ' + str(best) + '    point: ' + str(point) + '    time elapsed: ' + str(end - start))

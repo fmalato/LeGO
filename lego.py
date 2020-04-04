@@ -2,6 +2,8 @@ import numpy as np
 import time
 import sys
 import matplotlib.pyplot as plt
+import warnings
+warnings.filterwarnings('always')
 
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split, GridSearchCV
@@ -13,7 +15,7 @@ from testFunctions import rosen, rastrigin, schwefel
 
 
 def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTrainingSamples=1000, visualize=True,
-         validation=False):
+         validation=False, score='recall'):
     actualBest = float('inf')
     bestPoint = []
     trainSetX = np.array([])
@@ -49,7 +51,7 @@ def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTr
     print('Positive examples: ' + str(positives) + '/' + str(len(yTrain)))
 
     if validation:
-        clf.C, clf.gamma, clf.class_weight, clf.kernel = validate(xTrain, yTrain, xTest, yTest)
+        clf.C, clf.gamma, clf.class_weight, clf.kernel = validate(xTrain, yTrain, xTest, yTest, score)
 
     # training
     clf.fit(xTrain, yTrain.ravel())
@@ -92,37 +94,26 @@ def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTr
         if stats[i] < threshold:
             goodOptChance += 1
     print('\n')
-    return actualBest, bestPoint, goodOptChance, numRuns, samples
+    return actualBest, bestPoint, goodOptChance, numRuns, samples, clf.C, clf.gamma, clf.class_weight, clf.kernel
 
 
-def validate(xTrain, yTrain, xTest, yTest):
+def validate(xTrain, yTrain, xTest, yTest, score='recall'):
     parameters = [{'kernel': ['rbf'],
                    'gamma': [1e-10, 1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-2, 1],
                    'C': [0.001, 0.01, 0.1, 1, 10, 100],
                    'class_weight': [{1: 1}, {1: 2}, {1: 5}, {1: 10}]}]
 
-    print('Tuning hyper-parameters for recall')
+    print('Tuning hyper-parameters for %s' % score)
 
-    clf = GridSearchCV(SVC(), parameters, scoring='recall_macro')
+    clf = GridSearchCV(SVC(), parameters, scoring='%s_macro' % score)
     clf.fit(xTrain, yTrain.ravel())
 
     print("Best parameters set found on development set:")
     print()
     print(clf.best_params_)
     print()
-    print("Grid scores on development set:")
-    print()
-    means = clf.cv_results_['mean_test_score']
-    stds = clf.cv_results_['std_test_score']
-    for mean, std, params in zip(means, stds, clf.cv_results_['params']):
-        print("%0.3f (+/-%0.03f) for %r"
-              % (mean, std * 2, params))
-    print()
 
     print("Detailed classification report:")
-    print()
-    print("The model is trained on the full development set.")
-    print("The scores are computed on the full evaluation set.")
     print()
     yTrue, yPred = yTest, clf.predict(xTest)
     print(classification_report(yTrue, yPred))
@@ -132,7 +123,7 @@ def validate(xTrain, yTrain, xTest, yTest):
 
 
 
-"""if __name__ == '__main__':
+if __name__ == '__main__':
 
     name = "schwefel"
     results = []
@@ -206,26 +197,3 @@ def validate(xTrain, yTrain, xTest, yTest):
             else:
                 ax.scatter(samples[i][0][0], samples[i][0][1], samples[i][0][2], marker='.', c='#ff0000')
         plt.show()
-
-
-'''
-
-Multistart dim:10 34000
-
-best: 8.95462647602268    point: [-1.98991225e+00 -7.43738143e-08 -9.94958615e-01  9.94958606e-01
- -9.94958641e-01 -2.81956823e-09  9.94958636e-01  9.94958622e-01
- -1.66350992e-08 -5.27418536e-08]    time elapsed: 162.63828134536743
-
-
-Lego dim:10 32000 + 2000
-
-pretraining best: 11.9394986095372
-Positive examples: 1512/24000
-Accuracy: 96.72500000000001%
-best: 5.969754342559838    point: [ 9.94958630e-01 -9.94958637e-01 -9.94958640e-01 -6.39987000e-09
-  9.94958638e-01 -7.77808983e-09 -9.32782112e-09 -9.94958647e-01
- -9.94958641e-01 -9.48547615e-09]    time elapsed: 178.54057955741882
-An acceptable optimum was found 1895 times out of 55779 trials.
-
-'''
-"""

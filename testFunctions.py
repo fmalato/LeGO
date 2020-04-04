@@ -9,14 +9,15 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 def rosen(x):
-    return sum(100.0*(x[1:]-x[:-1]**2.0)**2.0 + (1-x[:-1])**2.0)
+    return sum(100.0 * (x[1:] - x[:-1] ** 2.0) ** 2.0 + (1 - x[:-1]) ** 2.0)
 
 
 def rastrigin(x, A=10):
     res = A * len(x)
     for i in range(len(x)):
-        res += x[i]**2 - A * np.cos(2 * math.pi * x[i])
+        res += x[i] ** 2 - A * np.cos(2 * math.pi * x[i])
     return res
+
 
 '''
 def schwefel(x):
@@ -28,6 +29,7 @@ def schwefel(x):
     else:
         return float('inf')
 '''
+
 
 def schwefel(x):
     try:

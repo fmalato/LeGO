@@ -13,14 +13,14 @@ from multistart import multistartNew, generate
 numSamples = 10000
 numTrainingSamples = 10000
 visualize = True
-validation = True
+validation = False
 nDimensions = 9
 maxRange = 500
-f = rastrigin
+f = schwefel
 
 C = 0.01
 gamma = 1e-6
-class_weight = {1: 50}
+class_weight = {1: 10}
 
 for threshold in range(100, 10, -10):
     print("Threshold: 100")
