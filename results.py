@@ -17,6 +17,7 @@ visualize = True
 validation = True
 nDimensions = 9
 maxRange = 500
+f = schwefel
 
 C = 0.01
 gamma = 1e-6
@@ -25,7 +26,7 @@ class_weight = {1: 50}
 clf = SVC(C=C, gamma=gamma, class_weight=class_weight)
 
 start = time.time()
-best, point, goodOptChance, numRuns, samples = lego(schwefel, threshold=threshold, clf=clf, numSamples=numSamples,
+best, point, goodOptChance, numRuns, samples = lego(f, threshold=threshold, clf=clf, numSamples=numSamples,
                                                     numTrainingSamples=numTrainingSamples, n_dimensions=nDimensions,
                                                     maxRange=maxRange, visualize=visualize, validation=validation)
 
@@ -37,7 +38,7 @@ idx = 0
 value = 0
 print("Minimizing LeGO points.")
 for sample in samples:
-    res = minimize(schwefel, sample[0], method='L-BFGS-B', options={'ftol': 1e-8})
+    res = minimize(f, sample[0], method='L-BFGS-B', options={'ftol': 1e-8})
     json_data["lego"][str(idx)] = []
     json_data["lego"][str(idx)].append({"point": list(sample[0]),
                                       "value": res["fun"]})
@@ -46,7 +47,7 @@ print("Starting Multistart iterations.")
 for i in range(len(samples)):
     sys.stdout.write('\r Progress: {n}/{t}'.format(n=i, t=numSamples))
     sys.stdout.flush()
-    value, point = multistartNew(schwefel, nDimensions, maxRange, 1)
+    value, point = multistartNew(f, nDimensions, maxRange, 1)
     json_data["multistart"][str(i)] = []
     json_data["multistart"][str(i)].append({"point": list(point),
                                             "value": value})
