@@ -49,24 +49,6 @@ def multistartNew(f, n_dimensions=2, maxRange=5.12, numSamples=100):
     return actualBest, bestPoint
 
 
-"""
-x = np.arange(-5.12, 5.12, 0.1)
-y = np.arange(-5.12, 5.12, 0.1)
-xgrid, ygrid = np.meshgrid(x, y)
-xy = np.stack([xgrid, ygrid])
-z = rastrigin(xy)
-data = []
-for i in range(len(x)):
-    for j in range(len(y)):
-        data.append([xgrid[i][j], ygrid[i][j], z[i][j]])
-
-data = np.asarray(data)
-print(data.shape)
-best, point = multistart(rastrigin, data, numSamples=100)
-print('best: ' + str(best) + '    point: ' + str(point))
-
-"""
-
 if __name__ == '__main__':
     start = time.time()
     best, point = multistartNew(schwefel, n_dimensions=10, maxRange=500, numSamples=20100)

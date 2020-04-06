@@ -158,9 +158,12 @@ if __name__ == '__main__':
     clf = SVC(C=C, gamma=gamma, class_weight=class_weight)
 
     start = time.time()
-    best, point, goodOptChance, numRuns, samples = lego(schwefel, threshold=threshold, clf=clf, numSamples=numSamples,
-                                                        numTrainingSamples=numTrainingSamples, n_dimensions=nDimensions,
-                                                        maxRange=maxRange, visualize=visualize, validation=validation)
+    best, point, goodOptChance, numRuns, samples, C, gamma, weights, kernel = lego(schwefel, threshold=threshold,
+                                                                                   clf=clf, numSamples=numSamples,
+                                                                                   numTrainingSamples=numTrainingSamples,
+                                                                                   n_dimensions=nDimensions,
+                                                                                   maxRange=maxRange, visualize=visualize,
+                                                                                   validation=validation)
     results.append(best)
     end = time.time()
     print('best: ' + str(best) + '    point: ' + str(point) + '    time elapsed: ' + str(end - start))
