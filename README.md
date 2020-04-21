@@ -35,9 +35,9 @@ Here dimension 3-4 results for Schwefel function and ECDF with dim 10.
 
 <div>
 <p align="center">
-<img src="images/schwefel3d.png" width=auto height=480px>
-<img src="images/schwefel4d.png" width=auto height=480px>
-<img src="images/ecdfschwefel.png" width=auto height=480px>
+<img src="images/schwefel3d.png" width=30% height=auto>
+<img src="images/schwefel4d.png" width=30% height=auto>
+<img src="images/ecdfschwefel.png" width=30% height=auto>
 </p>
 <div/>
 
