@@ -75,10 +75,10 @@ def lego(f, threshold, clf, n_dimensions=2, maxRange=5.12, numSamples=100, numTr
     while len(stats) < numSamples:
         sample = generate(n_dimensions, maxRange)
         s = clf.predict([sample])
+        if visualize:
+            samples.append((sample, s[0]))
         if s[0] == 1.0:
             res = minimize(f, sample, method='L-BFGS-B', options={'ftol': 1e-8})
-            if visualize:
-                samples.append((sample, s[0]))
             if res['fun'] < actualBest:
                 actualBest = res['fun']
                 bestPoint = res.x
@@ -123,24 +123,24 @@ def validate(xTrain, yTrain, xTest, yTest, score='recall'):
 
 if __name__ == '__main__':
 
-    name = "schwefel"
+    name = "rastrigin"
     results = []
     if name == "schwefel":
-        numSamples = 1000
-        numTrainingSamples = 10000
+        numSamples = 100
+        numTrainingSamples = 1000
         # recommended values:
         # Rastrigin: 2D: 1, 3D: 5, 10D: 60
-        threshold = -3000
+        threshold = -1150
         visualize = True
         validation = True
-        nDimensions = 10
+        nDimensions = 3
         maxRange = 500
     else:
         numSamples = 100
         numTrainingSamples = 1000
         # recommended values:
         # Rastrigin: 2D: 1, 3D: 4, 10D: 60
-        threshold = 4
+        threshold = 2.5
         visualize = True
         validation = True
         nDimensions = 3
@@ -158,7 +158,7 @@ if __name__ == '__main__':
     clf = SVC(C=C, gamma=gamma, class_weight=class_weight)
 
     start = time.time()
-    best, point, goodOptChance, numRuns, samples, C, gamma, weights, kernel = lego(schwefel, threshold=threshold,
+    best, point, goodOptChance, numRuns, samples, C, gamma, weights, kernel = lego(rastrigin, threshold=threshold,
                                                                                    clf=clf, numSamples=numSamples,
                                                                                    numTrainingSamples=numTrainingSamples,
                                                                                    n_dimensions=nDimensions,

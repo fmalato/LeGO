@@ -19,18 +19,6 @@ def rastrigin(x, A=10):
     return res
 
 
-'''
-def schwefel(x):
-    if all(value < 500 for value in x) and all(value > 500 for value in x):
-        res = 418.9829 * len(x)
-        for i in range(len(x)):
-            res -= x[i] * np.sin(np.sqrt(np.absolute(x[i])))
-        return res
-    else:
-        return float('inf')
-'''
-
-
 def schwefel(x):
     try:
         assert np.all(np.abs(x) <= 500)

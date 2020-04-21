@@ -39,7 +39,6 @@ def saveJsonStats(f=schwefel, numSamples=10000, numTrainingSamples=10000, thresh
     idx = 0
     print("Minimizing LeGO points.")
     for sample in samples:
-        # TO-DO: trovare un altro modo per evitare di ripetere il minimize
         res = minimize(f, sample[0], method='L-BFGS-B', options={'ftol': 1e-8})
         json_data["lego"][str(idx)] = []
         json_data["lego"][str(idx)].append({"point": list(sample[0]), "value": res["fun"]})
@@ -61,6 +60,7 @@ def saveJsonStats(f=schwefel, numSamples=10000, numTrainingSamples=10000, thresh
 if __name__ == '__main__':
     # Rastrigin: 10000, 10000, 40, True, True, 9, 5.12, 0.1, 0.01, 10
     # Schwefel: 10000, 10000, -2500, True, True, 9, 500, 0.01, 1e-6, 10
+
     numSamples = 10000
     numTrainingSamples = 10000
     threshold = -2500
