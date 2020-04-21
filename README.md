@@ -30,7 +30,7 @@ The code has been developed and tested with:
 
 ## Results
 
-Here se can see the 3 and 4-dimensional results for the Schwefel function and the related ECDF with dim 10. The global optimum is in (420.96, ..., 420.96), so we can see in 
+Here we can see the 3 and 4-dimensional results for the Schwefel function and the related ECDF with dim 10. The global optimum is in (420.96, ..., 420.96), so we can see in 
 the first and the second picture how SVM can detech worthy starting points. Moreover, the ECDF show how Lego finds better local optima than 
 Multistart.
 
