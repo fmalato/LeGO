@@ -31,13 +31,15 @@ The code has been developed and tested with:
 
 ## Results
 
-Here dimension 3-4 results for Schwefel function and ECDF with dim 10.
+Here dimension 3-4 results for Schwefel function and ECDF with dim 10. Optimum in (420.96, ..., 420.96), we can see in 
+the first and the second picture how SVM can detect points near. ECDF show how Lego find better local optima than 
+Multistart.
 
 <div>
 <p align="center">
-<img src="images/schwefel3d.png" width=30% height=auto>
-<img src="images/schwefel4d.png" width=30% height=auto>
-<img src="images/ecdfschwefel.png" width=30% height=auto>
+<img src="images/schwefel3d.png" width=33% height=auto>
+<img src="images/schwefel4d.png" width=33% height=auto>
+<img src="images/ecdfschwefel.png" width=33% height=auto>
 </p>
 <div/>
 
